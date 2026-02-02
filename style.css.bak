@@ -1,0 +1,177 @@
+/* 
+ * L0: VOID & BASE SETUP 
+ */
+:root {
+  --x: 50%;
+  --y: 50%;
+  --spotlight-radius: 340px;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000; /* L0 Void */
+  cursor: none; /* Hide default cursor */
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 
+ * L1: ENVIRONMENT LAYER 
+ */
+.layer-environment {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("palace.jpg") center / cover no-repeat;
+  filter: brightness(0.4) contrast(1.1);
+  z-index: 1;
+  pointer-events: none; /* Let clicks pass through if needed, though mostly visual */
+}
+
+/* 
+ * L2: ENTITIES (HEARTS)
+ */
+.heart-entity {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: #8b0000; /* Deep red */
+  clip-path: path(
+    "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+  );
+  opacity: 0; /* Hidden by default */
+  transform: translate(-50%, -50%);
+  transition:
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 
+ * L3: CONTENT ZONE 
+ */
+.content-container {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  text-align: center;
+  z-index: 3;
+  /* Visibility controlled by mask, but basic layout here */
+  color: rgba(255, 255, 255, 0.9);
+}
+
+h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  margin-bottom: 3rem;
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-shadow: 0 2px 20px rgba(0,0,0,1);
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  height: 60px; /* Fixed height to prevent layout shift */
+  align-items: center;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Inter", sans-serif;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  padding: 12px 32px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.8);
+  color: #fff;
+}
+
+/* Specific state for the transforming buttons */
+.btn-hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-reveal {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 
+ * L4: MASK LAYER
+ * This applies the visibility logic to everything "in the room"
+ */
+.masked-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto; /* Allow interaction with content inside */
+
+  /* The Magic */
+  mask-image: radial-gradient(
+    circle var(--spotlight-radius) at var(--x) var(--y),
+    black 0%,
+    rgba(0, 0, 0, 0.8) 35%,
+    transparent 70%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--spotlight-radius) at var(--x) var(--y),
+    black 0%,
+    rgba(0, 0, 0, 0.8) 35%,
+    transparent 70%
+  );
+}
+
+/* 
+ * UTILITIES
+ */
+.debug-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 50%;
+  transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%));
+  pointer-events: none;
+  z-index: 100;
+  display: none; /* Enable for debugging */
+}

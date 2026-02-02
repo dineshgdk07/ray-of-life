@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saje's Light</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Dancing+Script:wght@400;600;700&family=Inter:wght@300;400;500&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop>
+        <source src="ye-tune.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- FIREFLY CURSOR -->
+    <div class="firefly-cursor"></div>
+
+    <!-- ACT 1: PLAYFUL TRAP (The interaction) -->
+    <section id="act-1" class="act active">
+        <!-- L4: Mask Layer Wrapper (Flashlight effect) -->
+        <div class="masked-layer">
+            
+            <!-- L1: Environment -->
+            <div class="layer-environment"></div>
+
+            <!-- L3: Content Zone -->
+            <div class="content-container">
+                <h1 id="act1-headline">Hey Saje 👀<br>Quick question before you go…</h1>
+                
+                <div class="button-group relative-group">
+                    <button id="btn-yes-act1" class="btn btn-primary">YES 😊</button>
+                    <button id="btn-no-act1" class="btn btn-secondary">NO 🙄</button>
+                </div>
+
+                <p id="persistent-msg" class="hidden-msg">Okay okay… you’re persistent 😅<br>Try the other one once?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACT 2: SOFT LANDING (Poetry) -->
+    <section id="act-2" class="act hidden">
+        <div class="book-scene">
+            <div class="book">
+                <!-- Left Page: Decorative -->
+                <div class="page left-page">
+                    <div class="page-content center-content">
+                        <h2 class="book-title">The Story<br>of<br>Us</h2>
+                        <div class="divider">❦</div>
+                    </div>
+                </div>
+
+                <!-- Right Page: Content -->
+                <div class="page right-page">
+                    <div class="page-content" id="book-content-area">
+                        <!-- Sections -->
+                        <div id="poem-part-1" class="poem-section hidden-section">
+                            <p>Should I write you a letter—</p>
+                            <p>Where I say how deep this feeling runs,</p>
+                            <p>how much I admire you,</p>
+                            <p>how I ache for your presence...</p>
+                        </div>
+
+                        <div id="poem-part-2" class="poem-section hidden-section">
+                            <p class="highlight">There’s a version of me</p>
+                            <p>that existed before you —</p>
+                            <p>quiet, steady, untouched.</p>
+                            <p>And then you arrived...</p>
+                            <p>like a small spark in an empty room.</p>
+                        </div>
+
+                        <div id="poem-part-3" class="poem-section hidden-section">
+                            <p class="strong">Dear love,</p>
+                            <p>What can I give to you?</p>
+                            <p>Already, I’ve given my heart, my mind...</p>
+                            <p>The final thing that still remains is my life.</p>
+                            <p class="signature">I wrote these for you, Saje.</p>
+                        </div>
+                        
+                        <!-- New Page Content (Initially Hidden) -->
+                        <div id="page-end-content" class="poem-section hidden-section" style="top: 50%; transform: translate(-50%, -50%);">
+                             <button id="btn-act2-next" class="btn-minimal">One last thing...</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CELEBRATION OVERLAY -->
+    <canvas id="celebration-canvas"></canvas>
+
+    <!-- ACT 3: THE PROPOSAL (The Result) -->
+    <section id="act-3" class="act hidden">
+        <div class="final-container">
+            <p class="final-text">that stays with me… a little longer?</p>
+            <p class="final-text">I live in a dark room,</p>
+            <p class="final-text">one I have long been used to...</p>
+            <p class="final-text">Thank you for reading this.</p>
+            <p class="final-text">You were real to me.</p>
+
+            <div class="buttons-final" id="final-buttons">
+                <button id="btn-yes-final" class="btn btn-gold">YES, OF COURSE ❤️</button>
+                <button id="btn-no-final" class="btn btn-ghost">no</button>
+            </div>
+            
+            <div id="sad-ending" class="sad-ending hidden">
+                <p>Oh... okay. 💔</p>
+                <p>I understand.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sound Warning -->
+    <div id="sound-warning" class="sound-warning">
+        🔊 Please verify your sound is ON (> 20%) for the best experience.
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
