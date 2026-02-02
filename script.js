@@ -404,7 +404,7 @@ function setupAct3() {
         texts.forEach(t => t.style.opacity = 0);
         buttons.style.opacity = 0;
         setTimeout(() => {
-             container.innerHTML = "<h1 style='font-family:Dancing Script; font-size:3rem; margin-top:20vh;'>Really, is it YES! ❤️</h1><p style='margin-top:20px; font-size:1.5rem;'>My golden evening has begun.</p>";
+             container.innerHTML = "<h1 style='font-family:Dancing Script; font-size:3rem; margin-top:20vh;'>And just like that,</h1><p style='margin-top:20px; font-size:1.5rem;'>the evening turned gold... ❤️</p>";
              celebrate();
         }, 1000);
     });
