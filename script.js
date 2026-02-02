@@ -271,7 +271,7 @@ function startTypewriterSequence() {
             section: sec
         });
         
-        queue.push({ pause: 1500 }); // Pause between sections
+        queue.push({ pause: 2500 }); // Pause between sections
     });
 
     readNextBatch(queue, 0);
@@ -357,7 +357,7 @@ function readNextBatch(queue, index) {
             chars[charIndex].classList.add('inked');
             charIndex++;
             // Reading speed
-            setTimeout(revealChar, 20 + Math.random() * 20);
+            setTimeout(revealChar, 50 + Math.random() * 30);
         } else {
             // Batch finished
             setTimeout(() => readNextBatch(queue, index + 1), 800);
