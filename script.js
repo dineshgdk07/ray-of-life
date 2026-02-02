@@ -1,7 +1,9 @@
 // Configuration
 const CONFIG = {
     lerpFactor: 0.12,
-    lightRadius: 400,
+    lerpFactor: 0.12,
+    lightRadius: 0, // Start dark!
+    targetRadius: 400, // Target size
     heartCount: 15,
     repulsionRadius: 120, // For hearts
     visibilityRadius: 250,
@@ -12,6 +14,7 @@ const CONFIG = {
 // State
 let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 let light = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+let spotlightCurrentRadius = 0;
 let firefly = { x: window.innerWidth / 2, y: window.innerHeight / 2, vx: 0, vy: 0 };
 let hearts = [];
 let trailPoints = [];
@@ -19,6 +22,7 @@ let dustMotes = [];
 let noClickAttempts = 0;
 let currentAct = 1;
 let time = 0;
+let interactionEnabled = false;
 
 // Elements
 let acts = {};
@@ -119,6 +123,25 @@ function init() {
     for (let i = 0; i < CONFIG.heartCount; i++) {
         hearts.push(new Heart(act1Mask));
     }
+    // Delayed Spotlight Reveal
+    setTimeout(() => {
+        let startTime = null;
+        const duration = 2500;
+        
+        function expand(now) {
+            if (!startTime) startTime = now;
+            const progress = Math.min((now - startTime) / duration, 1);
+            
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+            
+            CONFIG.lightRadius = ease * CONFIG.targetRadius;
+            
+            if (progress < 1) requestAnimationFrame(expand);
+        }
+        interactionEnabled = true; // Allow no button to escape now
+        requestAnimationFrame(expand);
+    }, 2000); // 1 second total darkness
 }
 
 function checkAudio() {
@@ -151,6 +174,7 @@ function setupAct1() {
     });
 
     const runaway = (e) => {
+        if (!interactionEnabled) return; // Wait for light!
         if (noClickAttempts >= 3) return;
         
         // SAFE ZONES: Defined relative to the button's starting position (which is center-ish)
@@ -406,6 +430,23 @@ function setupAct3() {
         setTimeout(() => {
              container.innerHTML = "<h1 style='font-family:Dancing Script; font-size:3rem; margin-top:20vh;'>And just like that,</h1><p style='margin-top:20px; font-size:1.5rem;'>the evening turned gold... ❤️</p>";
              celebrate();
+             
+             // Finale Reveal
+             const goldenBg = document.querySelector('.golden-bg');
+             const brightOverlay = document.querySelector('.bright-overlay');
+             
+             // 1. Reveal Golden Background slowly
+             if (goldenBg) {
+                 setTimeout(() => goldenBg.classList.add('visible'), 0);
+             }
+             
+             // 2. Brighten Screen & Switch Text Color
+             if (brightOverlay) {
+                 setTimeout(() => {
+                     brightOverlay.classList.add('visible');
+                     container.classList.add('dark-text');
+                 }, 4000);
+             }
         }, 1000);
     });
 
@@ -416,6 +457,13 @@ function setupAct3() {
         
         sadEnding.classList.remove('hidden');
         sadEnding.style.display = 'block';
+        
+        // Sad Ending Atmosphere
+        const redOverlay = document.querySelector('.red-overlay');
+        if (redOverlay) {
+            setTimeout(() => redOverlay.classList.add('visible'), 500);
+        }
+        
         setTimeout(() => sadEnding.classList.add('active'), 100);
     });
 }
@@ -466,6 +514,7 @@ function loop() {
 
     document.documentElement.style.setProperty('--x', `${light.x}px`);
     document.documentElement.style.setProperty('--y', `${light.y}px`);
+    document.documentElement.style.setProperty('--spotlight-radius', `${CONFIG.lightRadius}px`);
     
     // Act 1 Hearts
     if (currentAct === 1) {
@@ -495,31 +544,51 @@ function celebrate() {
     canvas.height = window.innerHeight;
     
     let particles = [];
-    const colors = ['#FFD700', '#FF69B4', '#ff4d4d', '#ffffff'];
+    // Firefly colors: yellow, gold, soft white
+    const colors = ['#FFD700', '#FFFACD', '#FFFFFF', '#FFEC8B'];
     
-    for (let i = 0; i < 150; i++) {
+    for (let i = 0; i < 400; i++) { // Even more fireflies
         particles.push({
             x: canvas.width / 2,
             y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 15,
-            vy: (Math.random() - 0.5) * 15,
-            size: Math.random() * 5 + 2,
+            // Blast them everywhere
+            vx: (Math.random() - 0.5) * 30, // Faster spread
+            vy: (Math.random() - 0.5) * 30,
+            size: Math.random() * 3 + 2,
             color: colors[Math.floor(Math.random() * colors.length)],
-            life: 100
+            life: 200 + Math.random() * 100, // Longer life due to floaty nature
+            wobble: Math.random() * Math.PI * 2
         });
     }
     
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        // Add glow effect
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#FFD700";
+        
         let active = false;
         particles.forEach(p => {
             if (p.life > 0) {
                 active = true;
-                p.x += p.vx;
+                
+                // Firefly movement: less gravity, more wobble
+                p.x += p.vx + Math.sin(p.wobble) * 0.5;
                 p.y += p.vy;
-                p.vy += 0.2; // Gravity
+                
+                p.vy += 0.01; // Almost zero gravity
+                p.vx *= 0.98; // Less drag
+                p.vy *= 0.98;
+                
+                // Add jitter/life
+                p.wobble += 0.1;
+                
                 p.life--;
+                
+                // Fade out at end of life
+                const alpha = Math.min(1, p.life / 50);
+                ctx.globalAlpha = alpha;
                 
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
@@ -527,6 +596,9 @@ function celebrate() {
                 ctx.fill();
             }
         });
+        
+        ctx.globalAlpha = 1; // Reset alpha
+        ctx.shadowBlur = 0; // Reset glow
         
         if (active) requestAnimationFrame(animate);
     }
